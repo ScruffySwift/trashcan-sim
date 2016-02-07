@@ -20,9 +20,9 @@ def simulate(cap, lamb, sleep):
         time.sleep(sleep)
     return True
 
-def simAndAlert(trashname):
-    simulate(30, 5, 1)
-    print trashname, "full", alertApi(host, t, "full", "http").text
+def simAndAlert(trashname, host, lamb):
+    simulate(50, lamb, 1)
+    print trashname, "full", alertApi(host, trashname, "api/full", "http").text
 
 def alertApi(host, trashname, endpoint, protocol):
     return requests.post("{}://{}/{}/{}".format(protocol, host, endpoint, trashname))
@@ -31,8 +31,9 @@ if __name__ == '__main__':
     host = os.environ['TRASH_HOST']
     trashcans = ["trash" + str(i) for i in range(10)]
     for trash in trashcans:
-        print trash, "inserted", alertApi(host, trash, "empty", "http").text
+        print trash, "inserted", alertApi(host, trash, "api/empty", "http").text
 
     for trash in trashcans:
-        t = Thread(target=simAndAlert, args=(trash,))
+        lamb = np.random.random_integers(10)
+        t = Thread(target=simAndAlert, args=(trash,host,lamb,))
         t.start()
