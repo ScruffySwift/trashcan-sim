@@ -20,13 +20,14 @@ def simulate(cap, lamb, sleep):
         time.sleep(sleep)
     return True
 
-def alertTrashFull(host):
-    name = "test0"
-    endpoint = "/full/" + name
-    r = requests.post("http://" + host + endpoint)
-    print r.text
+def alertApi(host, trashname, endpoint, protocol):
+    return requests.post("{}://{}/{}/{}".format(protocol, host, endpoint, trashname))
 
 if __name__ == '__main__':
     host = os.environ['TRASH_HOST']
-    simulate(30, 5, 1)
-    alertTrashFull(host)
+    trashcans = ["trash" + str(i) for i in range(10)]
+    for t in trashcans:
+        print t, "inserted", alertApi(host, t, "empty", "http").text
+    for t in trashcans:
+        simulate(30, 5, 1)
+        print t, alertApi(host, t, "full", "http").text
