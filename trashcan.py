@@ -2,6 +2,8 @@
 
 import numpy as np
 import time
+import requests
+import os
 
 def simulate(cap, lamb, sleep):
     """
@@ -18,5 +20,14 @@ def simulate(cap, lamb, sleep):
         time.sleep(sleep)
     return True
 
+
+def postDataServer(host):
+    name = "test0"
+    endpoint = "/update/" + name
+    r = requests.post("http://" + host + endpoint)
+    print r.text
+
 if __name__ == '__main__':
-    print simulate(30, 5, 1)
+    host = os.environ['TRASH_HOST']
+    simulate(30, 5, 1)
+    postDataServer(host)
