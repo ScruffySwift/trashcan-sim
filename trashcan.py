@@ -20,14 +20,13 @@ def simulate(cap, lamb, sleep):
         time.sleep(sleep)
     return True
 
-
-def postDataServer(host):
+def alertTrashFull(host):
     name = "test0"
-    endpoint = "/update/" + name
+    endpoint = "/full/" + name
     r = requests.post("http://" + host + endpoint)
     print r.text
 
 if __name__ == '__main__':
     host = os.environ['TRASH_HOST']
     simulate(30, 5, 1)
-    postDataServer(host)
+    alertTrashFull(host)
