@@ -30,14 +30,14 @@ def simAlertReset(trashname, host, lamb, cap, protocol):
     # Sleep for some random amount of time
     sleep_time = np.random.random_integers(cap) + 10
     time.sleep(sleep_time)
-    print trashname, "empty", alertApi(host, trashname, "api/empty", "http").text
+    print trashname, "empty", alertApi(host, trashname, "api/empty", protocol).text
 
 
 def alertApi(host, trashname, endpoint, protocol):
     return requests.post("{}://{}/{}/{}".format(protocol, host, endpoint, trashname))
 
 if __name__ == '__main__':
-    capacity= os.getenv('TRASH_CAPACITY', 30)
+    capacity= int(os.getenv('TRASH_CAPACITY', '30'))
     host = os.getenv('TRASH_HOST', 'localhost:3000')
     ssl = os.getenv('TRASH_SSL', False)
 
