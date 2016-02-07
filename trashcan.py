@@ -20,13 +20,13 @@ def simulate(cap, lamb, sleep):
         time.sleep(sleep)
     return True
 
-def simAndAlert(trashname, host, lamb, cap):
+def simAndAlert(trashname, host, lamb, cap, protocol):
     simulate(cap, lamb, 1)
-    print trashname, "full", alertApi(host, trashname, "api/full", "http").text
+    print trashname, "full", alertApi(host, trashname, "api/full", protocol).text
 
-def simAlertReset(trashname, host, lamb, cap):
+def simAlertReset(trashname, host, lamb, cap, protocol):
     simulate(cap, lamb, 1)
-    print trashname, "full", alertApi(host, trashname, "api/full", "http").text
+    print trashname, "full", alertApi(host, trashname, "api/full", protocol).text
     # Sleep for some random amount of time
     sleep_time = np.random.random_integers(cap) + 10
     time.sleep(sleep_time)
@@ -39,12 +39,19 @@ def alertApi(host, trashname, endpoint, protocol):
 if __name__ == '__main__':
     capacity= os.getenv('TRASH_CAPACITY', 30)
     host = os.getenv('TRASH_HOST', 'localhost:3000')
+    ssl = os.getenv('TRASH_SSL', False)
+
+    if ssl:
+        protocol = "https"
+    else:
+        protocol = "http"
+
     trashcans = ["trash" + str(i) for i in range(10)]
     for trash in trashcans:
-        print trash, "inserted", alertApi(host, trash, "api/empty", "http").text
+        print trash, "inserted", alertApi(host, trash, "api/empty", protocol).text
 
     # Fill the trashcans
     for trash in trashcans:
         lamb = np.random.random_integers(10)
-        t = Thread(target=simAndAlert, args=(trash,host,lamb,capacity))
+        t = Thread(target=simAlertReset, args=(trash,host,lamb,capacity,protocol))
         t.start()
